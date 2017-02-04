@@ -1,6 +1,10 @@
 FROM haproxy:1.7.2
 MAINTAINER Esen Sagynov <kadishmal@gmail.com>
 
+# `socat` is necessary for dumping the socket information
+# to a temporary file before reloading the HAProxy.
+RUN apt-get update -y && apt-get install -y socat
+
 ENV HAPROXY_USER haproxy
 
 # Create a system group and user to be used by HAProxy.

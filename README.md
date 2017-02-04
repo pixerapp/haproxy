@@ -31,14 +31,17 @@ A Docker Compose example:
      - FLOATING_IP=*
     networks:
      - es
+    ports:
+     - 80:80
+     - 443:443
     volumes:
-     - /etc/ssl/domain/:/etc/ssl/domain
-     - /root/haproxy/config/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+     - /etc/ssl/pixerapp.com/:/etc/ssl/pixerapp.com
+     - /root/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
 ```
 
 ## Build a Docker image
 
-    docker build -t="pixerapp/haproxy:1.2.1-haproxy-1.7.2" .
+    docker build -t="pixerapp/haproxy:1.2.2-haproxy-1.7.2" .
 
 ## Reload HAProxy
 
@@ -47,3 +50,7 @@ Source: http://blog.haproxy.com/2015/10/14/whats-new-in-haproxy-1-6/
 Before reloading HAProxy, we save the server states using the following command:
 
     socat /tmp/socket - <<< "show servers state" > /tmp/ha_server_state
+
+Then reload HAProxy as usual.
+
+    haproxy -f /usr/local/etc/haproxy/haproxy.cfg -p /var/run/haproxy.pid -sf $(cat /var/run/haproxy.pid)
