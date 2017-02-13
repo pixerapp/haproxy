@@ -29,6 +29,7 @@ A Docker Compose example:
      - DNS_TCP_ADDR=127.0.0.1
      - DNS_TCP_PORT=53
      - FLOATING_IP=*
+     - STATSAUTH=admin:password
     networks:
      - es
     ports:
@@ -49,8 +50,20 @@ Source: http://blog.haproxy.com/2015/10/14/whats-new-in-haproxy-1-6/
 
 Before reloading HAProxy, we save the server states using the following command:
 
-    socat /tmp/socket - <<< "show servers state" > /tmp/ha_server_state
+    socat /run/haproxy/haproxy.sock - <<< "show servers state" > /tmp/ha_server_state
 
 Then reload HAProxy as usual.
 
     haproxy -f /usr/local/etc/haproxy/haproxy.cfg -p /var/run/haproxy.pid -sf $(cat /var/run/haproxy.pid)
+
+## Show HAProxy Statistics
+
+    socat /run/haproxy/haproxy.sock - <<< "show stat"
+
+## Lookup Host
+
+    getent hosts elasticsearch1 | awk '{ print $1 }'
+
+## HAProxy Server IP Resolution
+
+[Server IP address resolution using DNS](https://cbonte.github.io/haproxy-dconv/configuration-1.6.html#5.3)
